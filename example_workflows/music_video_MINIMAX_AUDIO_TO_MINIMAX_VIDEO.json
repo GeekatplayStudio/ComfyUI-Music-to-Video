@@ -1,0 +1,3070 @@
+{
+  "id": "66666666-6666-6666-8666-666666666666",
+  "revision": 1,
+  "last_node_id": 33,
+  "last_link_id": 55,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        60,
+        40
+      ],
+      "size": [
+        960,
+        560
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "# MUSIC VIDEO - ALL IN ONE (MiniMax H3)\n\nThis graph covers planning, cards, and the final video. It pauses twice, then renders video in resumable batches.\n\n### Queue 1 - plan\nWrite a music caption and lyrics in MiniMax Music 3; it generates the song, then queue. Review the timeline, lyrics, references, and prompts at STOP 1. Optional style and subject fields override the song-derived choices.\n\n### Queue 2 - render images\nEnable `approve_timeline` and queue. The run is saved, reference sheets and all cards render, then STOP 2 lets you review the deck.\n\n### Video batches - render and resume\nEnable `approve_cards` and queue. The MiniMax H3 node renders `segments_per_queue` unfinished clips per execution (default 4), saves each clip immediately, and skips completed clips next time. Queue again until all clips are present, or use the remaining Queue batch count shown by the status panel. MiniMax uses 20 steps with `res_multistep`/`simple` and has no negative prompt.\n\nThe stitcher may show an incomplete preview after an early batch; `final_music_video.mp4` is complete after every segment exists.\n\nA single **Card + video size** node keeps the cards and video at the same aspect ratio. All outputs stay under one run folder in `output/storyboard_projects/`: `project.json`, `song.wav`, `references/`, `cards/`, `clips/`, `segments/`, and `final_music_video.mp4`."
+      ],
+      "title": "READ ME - two stops, then video batches",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 2,
+      "type": "MarkdownNote",
+      "pos": [
+        60,
+        640
+      ],
+      "size": [
+        960,
+        420
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "# Geekatplay Studio\n### Vladimir Chopine\n\n**Thank you for your support!**\n\nIf this node pack is useful to you, please **give it a star on GitHub** - it really does help other people find it:\n\n[github.com/GeekatplayStudio/ComfyUI-Music-to-Video](https://github.com/GeekatplayStudio/ComfyUI-Music-to-Video)\n\nAnd please subscribe on YouTube for tutorials and new tools:\n\n- [youtube.com/@geekatplay](https://www.youtube.com/@geekatplay) - English\n- [youtube.com/@geekatplay-ru](https://www.youtube.com/@geekatplay-ru) - Russian\n- [youtube.com/@v-code-studio](https://www.youtube.com/@v-code-studio) - **V-Code Studio**, my new channel\n\n---\n*ComfyUI-Music-to-Video - Music Video Storyboard & Video Generator*"
+      ],
+      "title": "Geekatplay Studio - thank you!",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 4,
+      "type": "AudioLyricsSegmenter",
+      "pos": [
+        60,
+        1320
+      ],
+      "size": [
+        400,
+        330
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STORYBOARD_DATA",
+          "type": "STRING",
+          "links": [
+            52
+          ]
+        },
+        {
+          "name": "SEGMENT_COUNT",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "AUDIO_PATH",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AudioLyricsSegmenter"
+      },
+      "widgets_values": [
+        false,
+        6.0,
+        "large-v3",
+        "",
+        ""
+      ],
+      "title": "1. Analyse song + transcribe lyrics"
+    },
+    {
+      "id": 5,
+      "type": "SongTimelineReview",
+      "pos": [
+        520,
+        1120
+      ],
+      "size": [
+        560,
+        780
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STORYBOARD_DATA",
+          "type": "STRING",
+          "links": [
+            3
+          ]
+        },
+        {
+          "name": "PREVIEW_DATA",
+          "type": "STRING",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "TIMELINE_TABLE",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "FULL_LYRICS",
+          "type": "STRING",
+          "links": [
+            5
+          ]
+        },
+        {
+          "name": "SEGMENT_COUNT",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SongTimelineReview"
+      },
+      "widgets_values": [
+        false,
+        false,
+        "",
+        "Auto (match the music)",
+        ""
+      ],
+      "title": ">>> STOP 1 <<<  describe the look, then approve",
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 6,
+      "type": "PreviewAny",
+      "pos": [
+        520,
+        1960
+      ],
+      "size": [
+        560,
+        420
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "FULL LYRICS (complete, nothing cut)"
+    },
+    {
+      "id": 7,
+      "type": "StoryboardPromptGenerator",
+      "pos": [
+        1140,
+        1120
+      ],
+      "size": [
+        480,
+        760
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PROMPT_LIST",
+          "type": "STRING",
+          "links": [
+            6,
+            23
+          ]
+        },
+        {
+          "name": "ANIMATION_PROMPTS",
+          "type": "STRING",
+          "links": [
+            7,
+            41,
+            51
+          ]
+        },
+        {
+          "name": "REFERENCE_PLAN",
+          "type": "STRING",
+          "links": [
+            8,
+            15,
+            28
+          ]
+        },
+        {
+          "name": "CARD_SHEET",
+          "type": "STRING",
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "CARD_COUNT",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardPromptGenerator"
+      },
+      "widgets_values": [
+        false,
+        "Auto (detect from music theme & lyrics)",
+        "",
+        "",
+        "",
+        "",
+        "Z-Image",
+        "Creative (artistic music video - mood, symbolism, ideas leak between verses)",
+        "",
+        true,
+        "local LLM (reads the song, needs a model)",
+        "Qwen/Qwen3-4B-Instruct-2507",
+        0,
+        "fixed",
+        0.85
+      ],
+      "title": "2. BUILD ALL PROMPTS from the song  (fields below are OPTIONAL overrides)"
+    },
+    {
+      "id": 8,
+      "type": "PreviewAny",
+      "pos": [
+        1140,
+        1960
+      ],
+      "size": [
+        480,
+        420
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "REFERENCES + CARD PROMPTS - what will be rendered"
+    },
+    {
+      "id": 9,
+      "type": "StoryboardProjectSave",
+      "pos": [
+        1680,
+        1120
+      ],
+      "size": [
+        460,
+        340
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 3
+        },
+        {
+          "name": "prompt_list",
+          "type": "STRING",
+          "link": 6
+        },
+        {
+          "name": "animation_prompts",
+          "type": "STRING",
+          "link": 7
+        },
+        {
+          "name": "reference_plan",
+          "type": "STRING",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PROJECT_FILE",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "RUN_DIR",
+          "type": "STRING",
+          "links": [
+            10,
+            19,
+            32,
+            43,
+            50
+          ]
+        },
+        {
+          "name": "AUDIO_PATH",
+          "type": "STRING",
+          "links": [
+            48
+          ]
+        },
+        {
+          "name": "STORYBOARD_DATA",
+          "type": "STRING",
+          "links": [
+            11,
+            24,
+            31,
+            34,
+            42,
+            49,
+            55
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardProjectSave"
+      },
+      "widgets_values": [
+        "music_video",
+        "one run per song + timeline"
+      ],
+      "title": "3. Save the run  (same run for every stage)",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 10,
+      "type": "MusicVideoStatus",
+      "pos": [
+        60,
+        1700
+      ],
+      "size": [
+        400,
+        460
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 11
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STATUS",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MusicVideoStatus"
+      },
+      "widgets_values": [
+        "video",
+        "MiniMax-H3_i2v",
+        "final_music_video.mp4"
+      ],
+      "title": "*** WHERE AM I? ***",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 14,
+      "type": "ResolutionSelector",
+      "pos": [
+        1680,
+        1520
+      ],
+      "size": [
+        300,
+        180
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "links": [
+            25,
+            44
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": [
+            26,
+            45
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "ResolutionSelector"
+      },
+      "widgets_values": [
+        "16:9 (Widescreen)",
+        0.9,
+        32
+      ],
+      "title": "Card + video size  (ONE for everything)",
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 11,
+      "type": "UNETLoader",
+      "pos": [
+        2200,
+        1120
+      ],
+      "size": [
+        420,
+        130
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            12,
+            20
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "z_image_turbo_bf16.safetensors",
+        "default"
+      ],
+      "title": "Z-Image Turbo model"
+    },
+    {
+      "id": 12,
+      "type": "CLIPLoader",
+      "pos": [
+        2200,
+        1290
+      ],
+      "size": [
+        420,
+        140
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            13,
+            21
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen_3_4b.safetensors",
+        "lumina2",
+        "default"
+      ],
+      "title": "Z-Image text encoder (Qwen3-4B)"
+    },
+    {
+      "id": 13,
+      "type": "VAELoader",
+      "pos": [
+        2200,
+        1470
+      ],
+      "size": [
+        420,
+        100
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            14,
+            22
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ae.safetensors"
+      ],
+      "title": "Z-Image VAE (16-channel)"
+    },
+    {
+      "id": 15,
+      "type": "StoryboardReferencesRender",
+      "pos": [
+        2200,
+        1620
+      ],
+      "size": [
+        440,
+        540
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 12
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 13
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 14
+        },
+        {
+          "name": "reference_plan",
+          "type": "STRING",
+          "link": 15
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 55,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "REFERENCE_IMAGES",
+          "type": "IMAGE",
+          "links": [
+            27
+          ]
+        },
+        {
+          "name": "REFERENCE_SHEET",
+          "type": "IMAGE",
+          "links": [
+            16,
+            17
+          ]
+        },
+        {
+          "name": "REFERENCE_PLAN",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "SHEET_LAYOUT",
+          "type": "STRING",
+          "links": [
+            18
+          ]
+        },
+        {
+          "name": "REFERENCE_COUNT",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "REFERENCE_REPORT",
+          "type": "STRING",
+          "links": [
+            54
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardReferencesRender"
+      },
+      "widgets_values": [
+        false,
+        4,
+        1024,
+        1024,
+        8,
+        1.0,
+        "euler",
+        "simple",
+        42,
+        "fixed",
+        "text, watermark, logo, blurry, low quality, deformed, extra limbs, bad anatomy"
+      ],
+      "title": "4. RENDER REFERENCES  (turnaround sheets)",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 16,
+      "type": "PreviewImage",
+      "pos": [
+        2700,
+        1620
+      ],
+      "size": [
+        460,
+        480
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 16
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "title": "THE REFERENCE SHEET - every angle"
+    },
+    {
+      "id": 17,
+      "type": "StoryboardReferenceSaver",
+      "pos": [
+        2700,
+        2140
+      ],
+      "size": [
+        440,
+        300
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 17
+        },
+        {
+          "name": "sheet_layout",
+          "type": "STRING",
+          "link": 18
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGES",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "REFERENCES_DIR",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "SAVE_REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardReferenceSaver"
+      },
+      "widgets_values": [],
+      "title": "5. SAVE the reference sheet into the run",
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 18,
+      "type": "StoryboardCardsRender",
+      "pos": [
+        3200,
+        1120
+      ],
+      "size": [
+        460,
+        470
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 20
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 21
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 22
+        },
+        {
+          "name": "prompt_list",
+          "type": "STRING",
+          "link": 23
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 24
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 25
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 26
+        },
+        {
+          "name": "reference_images",
+          "type": "IMAGE",
+          "link": 27
+        },
+        {
+          "name": "reference_plan",
+          "type": "STRING",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CARD_IMAGES",
+          "type": "IMAGE",
+          "links": [
+            29,
+            30,
+            33
+          ]
+        },
+        {
+          "name": "CARD_COUNT",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "CARD_REPORT",
+          "type": "STRING",
+          "links": [
+            53
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardCardsRender"
+      },
+      "widgets_values": [
+        false,
+        1280,
+        736,
+        8,
+        1.0,
+        "euler",
+        "simple",
+        0,
+        "increment",
+        "text, watermark, logo, blurry, low quality, jpeg artifacts, deformed, extra limbs, bad anatomy, oversaturated",
+        128,
+        0.5
+      ],
+      "title": "6. RENDER ALL CARDS  (one queue, built on their references)",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 19,
+      "type": "PreviewImage",
+      "pos": [
+        3700,
+        1120
+      ],
+      "size": [
+        620,
+        620
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 29
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "title": "ALL CARDS"
+    },
+    {
+      "id": 20,
+      "type": "StoryboardCardSaver",
+      "pos": [
+        3200,
+        1640
+      ],
+      "size": [
+        420,
+        260
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 30
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 31
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 32
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SAVE_REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardCardSaver"
+      },
+      "widgets_values": [
+        0,
+        ""
+      ],
+      "title": "7. SAVE the deck into the run",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 21,
+      "type": "StoryboardCardReview",
+      "pos": [
+        3200,
+        1960
+      ],
+      "size": [
+        420,
+        380
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 33
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 34
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CARD_IMAGES",
+          "type": "IMAGE",
+          "links": [
+            35
+          ]
+        },
+        {
+          "name": "CARD_REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardCardReview"
+      },
+      "widgets_values": [
+        false,
+        false
+      ],
+      "title": ">>> STOP 2 <<<  like the cards?",
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 22,
+      "type": "StageMemoryCleaner",
+      "pos": [
+        3700,
+        1800
+      ],
+      "size": [
+        360,
+        140
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "passthrough_data",
+          "type": "*",
+          "link": 35
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PASSTHROUGH",
+          "type": "*",
+          "links": [
+            36
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StageMemoryCleaner"
+      },
+      "widgets_values": [
+        "Unload image models -> free VRAM for MiniMax H3"
+      ],
+      "title": "8. Unload image models",
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 23,
+      "type": "UNETLoader",
+      "pos": [
+        4400,
+        1120
+      ],
+      "size": [
+        420,
+        130
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            37
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+        "default"
+      ],
+      "title": "MiniMax H3 transformer"
+    },
+    {
+      "id": 24,
+      "type": "CLIPLoader",
+      "pos": [
+        4400,
+        1290
+      ],
+      "size": [
+        420,
+        140
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            38
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "minimax",
+        "default"
+      ],
+      "title": "MiniMax H3 text encoder (Qwen3-VL)"
+    },
+    {
+      "id": 25,
+      "type": "VAELoader",
+      "pos": [
+        4400,
+        1470
+      ],
+      "size": [
+        420,
+        100
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            39
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_fp16.safetensors"
+      ],
+      "title": "MiniMax H3 video VAE"
+    },
+    {
+      "id": 26,
+      "type": "VAELoader",
+      "pos": [
+        4400,
+        1610
+      ],
+      "size": [
+        420,
+        100
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            40
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_audio_vae_fp32.safetensors"
+      ],
+      "title": "MiniMax H3 audio VAE"
+    },
+    {
+      "id": 27,
+      "type": "MiniMaxSegmentsRender",
+      "pos": [
+        4400,
+        1760
+      ],
+      "size": [
+        560,
+        720
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 37
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 38
+        },
+        {
+          "name": "video_vae",
+          "type": "VAE",
+          "link": 39
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 40
+        },
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 36
+        },
+        {
+          "name": "animation_prompts",
+          "type": "STRING",
+          "link": 41
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 42
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 43
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 44
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 45
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SEGMENTS_DONE",
+          "type": "STRING",
+          "links": [
+            47
+          ]
+        },
+        {
+          "name": "RENDER_PLAN",
+          "type": "STRING",
+          "links": [
+            46
+          ]
+        },
+        {
+          "name": "SEGMENT_COUNT",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxSegmentsRender"
+      },
+      "widgets_values": [
+        false,
+        1280,
+        736,
+        24,
+        42,
+        20,
+        "res_multistep",
+        "simple",
+        999,
+        4,
+        true
+      ],
+      "title": "RENDER SEGMENTS (MiniMax H3, 4 per queue, resumable)",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 28,
+      "type": "PreviewAny",
+      "pos": [
+        5020,
+        1760
+      ],
+      "size": [
+        560,
+        420
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 46
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": ">>> THE FEED - every MiniMax H3 segment and prompt <<<"
+    },
+    {
+      "id": 30,
+      "type": "PreviewAny",
+      "pos": [
+        5020,
+        2220
+      ],
+      "size": [
+        560,
+        300
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 51
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": ">>> ANIMATION PROMPTS - one per segment <<<"
+    },
+    {
+      "id": 29,
+      "type": "VideoSegmentStitcher",
+      "pos": [
+        5020,
+        1120
+      ],
+      "size": [
+        440,
+        520
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio_path",
+          "type": "STRING",
+          "link": 48
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 49
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 50
+        },
+        {
+          "name": "after_segments",
+          "type": "*",
+          "link": 47
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FINAL_VIDEO_PATH",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "SEGMENTS_DIR",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VideoSegmentStitcher"
+      },
+      "widgets_values": [
+        false,
+        "video",
+        "MiniMax-H3_i2v",
+        "final_music_video.mp4",
+        24,
+        true
+      ],
+      "title": "10. Join every clip + the original song = FINAL CUT",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 3,
+      "type": "ac99f841-a3de-4329-9564-953b81cf9e16",
+      "pos": [
+        60,
+        1120
+      ],
+      "size": [
+        490,
+        540
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "tiled_decode",
+          "name": "switch",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "switch"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.31.0",
+        "previewExposures": []
+      },
+      "widgets_values": [
+        "Global Metadata: Lo-fi hip-hop, chillhop. 78 BPM, D flat major, major scale with jazzy extensions. Laid-back and dreamy throughout, a gentle warm drift with a subtle late-night glow that deepens in the middle and dissolves softly at the end. Studying, raining-outside, headphones-on late-night listening. Bedroom production: muddy warm texture, heavy vinyl crackle, tape hiss and wow-flutter pitch wobble, low-passed dusty mix, soft-clipped drums, everything slightly detuned and cozy.\n\nVocal Details: Soft androgynous vocal, hushed half-sung half-spoken delivery, sitting low in the mix like another instrument, lazy behind-the-beat phrasing, gentle breathy timbre. Sparse murmured double-tracked harmonies, occasional wordless \"mmm\" and \"ooh\" hums drenched in tape delay and warm spring reverb. Long stretches with no vocals at all.\n\nArrangement: Dusty boom-bap drums with a soft thumping kick, cracked snare with lazy swing, brushed hi-hats, low round sub bass. Warm Rhodes piano chords with slow chorus wobble as the harmonic bed, mellow jazzy guitar licks answering the vocal lines, constant vinyl crackle as texture. Intro: rain and vinyl noise, solo Rhodes chords fading in, drums slipping in halfway. Verses: minimal — drums, bass, Rhodes, soft guitar fills between lines. Instrumental sections: guitar and Rhodes trade relaxed jazzy phrases over the beat, occasional muted trumpet ghost notes far in the background. Bridge: drums drop away to rain, crackle, and floating detuned Rhodes, then the beat eases back in. Outro: elements fade one by one until only vinyl crackle and a last unresolved Rhodes chord remain.",
+        "[Intro]\nMmm...\n(rain on the window)\nOoh...\n\n[Verse]\nMidnight and the canvas glows\nDragging little wires where the current flows\nType a quiet dream, let the sampler drift\nNoise into a picture, like the fog just lifts\nTwenty slow steps, I'm in no hurry now\nLatents turning colors and I don't know how\nEvery render's like a polaroid I found\nSoft focus memories, no sound\n\n[Instrumental]\n\n[Verse]\nQueue another frame, let the motion breathe\nPictures start to move like the falling leaves\nVideo drifting by at twenty-four\nLittle animations on my bedroom floor\nSeed after seed like the rain outside\nSome of them are keepers, some I let slide\nSave the ones that feel like a Sunday slow\nNode to node to node... and off we go\n\n[Chorus]\nMmm... let it render on\n(take your time, take your time)\nOoh... by the morning it'll all be done\n(one more queue, one more try)\n\n[Instrumental]\n\n[Bridge]\nRain keeps drawing pictures on the glass...\nMy machine keeps dreaming...\nNeither of us fast...\n\n[Chorus]\nMmm... let it render on\n(take your time, take your time)\nOoh... by the morning it'll all be done\n(one more queue, one more try)\n\n[Instrumental]\n\n[Outro]\nMmm...\n(node to node)\nOoh... goodnight",
+        60,
+        197122968890040,
+        "minimax_music3_dit_fp16.safetensors",
+        "minimax_music3_text_encoder_pruned_int8_convrot.safetensors",
+        "minimax_music3_dav.safetensors",
+        true
+      ],
+      "title": "MiniMax Music 3 Text-to-Audio Generator"
+    },
+    {
+      "id": 31,
+      "type": "StageMemoryCleaner",
+      "pos": [
+        500,
+        1580
+      ],
+      "size": [
+        340,
+        80
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "passthrough_data",
+          "type": "*",
+          "link": 52
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PASSTHROUGH",
+          "type": "*",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "title": "CLEAR MEMORY between stages",
+      "properties": {
+        "Node name for S&R": "StageMemoryCleaner"
+      },
+      "widgets_values": [
+        "Unload music + whisper models before prompt & card stages"
+      ]
+    },
+    {
+      "id": 32,
+      "type": "PreviewAny",
+      "pos": [
+        3700,
+        1120
+      ],
+      "size": [
+        560,
+        520
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 53
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "CARD PROMPTS - which JSON + the exact prompt for every card"
+    },
+    {
+      "id": 33,
+      "type": "PreviewAny",
+      "pos": [
+        2700,
+        2180
+      ],
+      "size": [
+        560,
+        520
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 54
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "REFERENCE PROMPTS - which JSON + the exact prompt for every reference"
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      4,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      31,
+      0,
+      5,
+      0,
+      "STRING"
+    ],
+    [
+      3,
+      5,
+      0,
+      9,
+      0,
+      "STRING"
+    ],
+    [
+      4,
+      5,
+      1,
+      7,
+      0,
+      "STRING"
+    ],
+    [
+      5,
+      5,
+      3,
+      6,
+      0,
+      "STRING"
+    ],
+    [
+      6,
+      7,
+      0,
+      9,
+      1,
+      "STRING"
+    ],
+    [
+      7,
+      7,
+      1,
+      9,
+      2,
+      "STRING"
+    ],
+    [
+      8,
+      7,
+      2,
+      9,
+      3,
+      "STRING"
+    ],
+    [
+      9,
+      7,
+      3,
+      8,
+      0,
+      "STRING"
+    ],
+    [
+      10,
+      9,
+      1,
+      10,
+      1,
+      "STRING"
+    ],
+    [
+      11,
+      9,
+      3,
+      10,
+      0,
+      "STRING"
+    ],
+    [
+      12,
+      11,
+      0,
+      15,
+      0,
+      "MODEL"
+    ],
+    [
+      13,
+      12,
+      0,
+      15,
+      1,
+      "CLIP"
+    ],
+    [
+      14,
+      13,
+      0,
+      15,
+      2,
+      "VAE"
+    ],
+    [
+      15,
+      7,
+      2,
+      15,
+      3,
+      "STRING"
+    ],
+    [
+      16,
+      15,
+      1,
+      16,
+      0,
+      "IMAGE"
+    ],
+    [
+      17,
+      15,
+      1,
+      17,
+      0,
+      "IMAGE"
+    ],
+    [
+      18,
+      15,
+      3,
+      17,
+      1,
+      "STRING"
+    ],
+    [
+      19,
+      9,
+      1,
+      17,
+      2,
+      "STRING"
+    ],
+    [
+      20,
+      11,
+      0,
+      18,
+      0,
+      "MODEL"
+    ],
+    [
+      21,
+      12,
+      0,
+      18,
+      1,
+      "CLIP"
+    ],
+    [
+      22,
+      13,
+      0,
+      18,
+      2,
+      "VAE"
+    ],
+    [
+      23,
+      7,
+      0,
+      18,
+      3,
+      "STRING"
+    ],
+    [
+      24,
+      9,
+      3,
+      18,
+      4,
+      "STRING"
+    ],
+    [
+      25,
+      14,
+      0,
+      18,
+      5,
+      "INT"
+    ],
+    [
+      26,
+      14,
+      1,
+      18,
+      6,
+      "INT"
+    ],
+    [
+      27,
+      15,
+      0,
+      18,
+      7,
+      "IMAGE"
+    ],
+    [
+      28,
+      7,
+      2,
+      18,
+      8,
+      "STRING"
+    ],
+    [
+      29,
+      18,
+      0,
+      19,
+      0,
+      "IMAGE"
+    ],
+    [
+      30,
+      18,
+      0,
+      20,
+      0,
+      "IMAGE"
+    ],
+    [
+      31,
+      9,
+      3,
+      20,
+      1,
+      "STRING"
+    ],
+    [
+      32,
+      9,
+      1,
+      20,
+      2,
+      "STRING"
+    ],
+    [
+      33,
+      18,
+      0,
+      21,
+      0,
+      "IMAGE"
+    ],
+    [
+      34,
+      9,
+      3,
+      21,
+      1,
+      "STRING"
+    ],
+    [
+      35,
+      21,
+      0,
+      22,
+      0,
+      "IMAGE"
+    ],
+    [
+      36,
+      22,
+      0,
+      27,
+      4,
+      "IMAGE"
+    ],
+    [
+      37,
+      23,
+      0,
+      27,
+      0,
+      "MODEL"
+    ],
+    [
+      38,
+      24,
+      0,
+      27,
+      1,
+      "CLIP"
+    ],
+    [
+      39,
+      25,
+      0,
+      27,
+      2,
+      "VAE"
+    ],
+    [
+      40,
+      26,
+      0,
+      27,
+      3,
+      "VAE"
+    ],
+    [
+      41,
+      7,
+      1,
+      27,
+      5,
+      "STRING"
+    ],
+    [
+      42,
+      9,
+      3,
+      27,
+      6,
+      "STRING"
+    ],
+    [
+      43,
+      9,
+      1,
+      27,
+      7,
+      "STRING"
+    ],
+    [
+      44,
+      14,
+      0,
+      27,
+      8,
+      "INT"
+    ],
+    [
+      45,
+      14,
+      1,
+      27,
+      9,
+      "INT"
+    ],
+    [
+      46,
+      27,
+      1,
+      28,
+      0,
+      "STRING"
+    ],
+    [
+      47,
+      27,
+      0,
+      29,
+      3,
+      "STRING"
+    ],
+    [
+      48,
+      9,
+      2,
+      29,
+      0,
+      "STRING"
+    ],
+    [
+      49,
+      9,
+      3,
+      29,
+      1,
+      "STRING"
+    ],
+    [
+      50,
+      9,
+      1,
+      29,
+      2,
+      "STRING"
+    ],
+    [
+      51,
+      7,
+      1,
+      30,
+      0,
+      "STRING"
+    ],
+    [
+      52,
+      4,
+      0,
+      31,
+      0,
+      "*"
+    ],
+    [
+      53,
+      18,
+      2,
+      32,
+      0,
+      "STRING"
+    ],
+    [
+      54,
+      15,
+      5,
+      33,
+      0,
+      "STRING"
+    ],
+    [
+      55,
+      9,
+      3,
+      15,
+      4,
+      "STRING"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "QUEUE 1 : plan the video  (stops for approval)",
+      "bounding": [
+        40,
+        1060,
+        2080,
+        1360
+      ],
+      "color": "#3f789e",
+      "font_size": 30,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "QUEUE 2 : references -> cards  (stops for approval)",
+      "bounding": [
+        2160,
+        1060,
+        2200,
+        1400
+      ],
+      "color": "#3f9e5a",
+      "font_size": 30,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "VIDEO BATCHES : cards -> MiniMax H3 video -> final cut",
+      "bounding": [
+        4380,
+        1060,
+        1240,
+        1480
+      ],
+      "color": "#9e6b3f",
+      "font_size": 30,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4,
+  "definitions": {
+    "subgraphs": [
+      {
+        "id": "ac99f841-a3de-4329-9564-953b81cf9e16",
+        "version": 1,
+        "state": {
+          "lastGroupId": 0,
+          "lastNodeId": 43,
+          "lastLinkId": 63,
+          "lastRerouteId": 0
+        },
+        "revision": 0,
+        "config": {},
+        "name": "Text to Music (MiniMax Music 3)",
+        "inputNode": {
+          "id": -10,
+          "bounding": [
+            320,
+            820,
+            128,
+            208
+          ]
+        },
+        "outputNode": {
+          "id": -20,
+          "bounding": [
+            3210,
+            380,
+            128,
+            68
+          ]
+        },
+        "inputs": [
+          {
+            "id": "9f92b5c5-dadc-4b0f-84d9-b5ed2b3a0842",
+            "name": "caption",
+            "type": "STRING",
+            "linkIds": [
+              45
+            ],
+            "pos": [
+              424,
+              844
+            ]
+          },
+          {
+            "id": "bb9d2920-ba98-4c51-be7d-4b5736b14407",
+            "name": "lyrics",
+            "type": "STRING",
+            "linkIds": [
+              46
+            ],
+            "pos": [
+              424,
+              864
+            ]
+          },
+          {
+            "id": "be60d2f1-fc99-4ed6-a057-130a7b83945f",
+            "name": "max_duration",
+            "type": "FLOAT",
+            "linkIds": [
+              47
+            ],
+            "pos": [
+              424,
+              884
+            ]
+          },
+          {
+            "id": "a7f66596-0413-4906-a08f-475af0521252",
+            "name": "seed",
+            "type": "INT",
+            "linkIds": [
+              54
+            ],
+            "pos": [
+              424,
+              904
+            ]
+          },
+          {
+            "id": "cbfb7b7b-357f-44ab-80cb-8748020a9880",
+            "name": "unet_name",
+            "type": "COMBO",
+            "linkIds": [
+              55
+            ],
+            "pos": [
+              424,
+              924
+            ]
+          },
+          {
+            "id": "ec2e20dc-2e7b-4147-922f-5f5f26ac9854",
+            "name": "clip_name",
+            "type": "COMBO",
+            "linkIds": [
+              56
+            ],
+            "pos": [
+              424,
+              944
+            ]
+          },
+          {
+            "id": "eeefaa94-f342-415e-96e7-eb13dcccbac0",
+            "name": "vae_name",
+            "type": "COMBO",
+            "linkIds": [
+              57
+            ],
+            "pos": [
+              424,
+              964
+            ]
+          },
+          {
+            "id": "6da74b03-27d0-487e-b8d6-f94018b2ca9a",
+            "name": "switch",
+            "type": "BOOLEAN",
+            "linkIds": [
+              63
+            ],
+            "label": "tiled_decode",
+            "pos": [
+              424,
+              984
+            ]
+          }
+        ],
+        "outputs": [
+          {
+            "id": "82bef6fd-2dee-4579-b4ed-7d679d18279f",
+            "name": "AUDIO",
+            "type": "AUDIO",
+            "linkIds": [
+              62
+            ],
+            "localized_name": "AUDIO",
+            "pos": [
+              3234,
+              404
+            ]
+          }
+        ],
+        "widgets": [],
+        "nodes": [
+          {
+            "id": 6,
+            "type": "UNETLoader",
+            "pos": [
+              700,
+              380
+            ],
+            "size": [
+              480,
+              90
+            ],
+            "flags": {},
+            "order": 1,
+            "mode": 0,
+            "showAdvanced": false,
+            "inputs": [
+              {
+                "localized_name": "unet_name",
+                "name": "unet_name",
+                "type": "COMBO",
+                "widget": {
+                  "name": "unet_name"
+                },
+                "link": 55
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "MODEL",
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  6
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "UNETLoader",
+              "models": [
+                {
+                  "name": "minimax_music3_dit_fp16.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/MiniMax-Music-3/resolve/main/diffusion_models/minimax_music3_dit_fp16.safetensors",
+                  "directory": "diffusion_models"
+                }
+              ]
+            },
+            "widgets_values": [
+              "minimax_music3_dit_fp16.safetensors",
+              "default"
+            ]
+          },
+          {
+            "id": 13,
+            "type": "MiniMaxMusic3TextEncode",
+            "pos": [
+              1230,
+              380
+            ],
+            "size": [
+              500,
+              750
+            ],
+            "flags": {},
+            "order": 6,
+            "mode": 0,
+            "showAdvanced": true,
+            "inputs": [
+              {
+                "localized_name": "clip",
+                "name": "clip",
+                "type": "CLIP",
+                "link": 18
+              },
+              {
+                "localized_name": "caption",
+                "name": "caption",
+                "type": "STRING",
+                "widget": {
+                  "name": "caption"
+                },
+                "link": 45
+              },
+              {
+                "localized_name": "lyrics",
+                "name": "lyrics",
+                "type": "STRING",
+                "widget": {
+                  "name": "lyrics"
+                },
+                "link": 46
+              },
+              {
+                "localized_name": "seed",
+                "name": "seed",
+                "type": "INT",
+                "widget": {
+                  "name": "seed"
+                },
+                "link": 52
+              },
+              {
+                "localized_name": "max_duration",
+                "name": "max_duration",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "max_duration"
+                },
+                "link": 47
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "CONDITIONING",
+                "name": "CONDITIONING",
+                "type": "CONDITIONING",
+                "links": [
+                  15,
+                  16
+                ]
+              },
+              {
+                "localized_name": "seconds",
+                "name": "seconds",
+                "type": "FLOAT",
+                "links": [
+                  20
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "MiniMaxMusic3TextEncode"
+            },
+            "widgets_values": [
+              "",
+              "",
+              222,
+              "fixed",
+              60,
+              1.7,
+              50
+            ]
+          },
+          {
+            "id": 3,
+            "type": "CLIPLoader",
+            "pos": [
+              700,
+              550
+            ],
+            "size": [
+              480,
+              120
+            ],
+            "flags": {},
+            "order": 0,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "clip_name",
+                "name": "clip_name",
+                "type": "COMBO",
+                "widget": {
+                  "name": "clip_name"
+                },
+                "link": 56
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "CLIP",
+                "name": "CLIP",
+                "type": "CLIP",
+                "links": [
+                  18
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "CLIPLoader",
+              "models": [
+                {
+                  "name": "minimax_music3_text_encoder_pruned_int8_convrot.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/MiniMax-Music-3/resolve/main/text_encoders/minimax_music3_text_encoder_pruned_int8_convrot.safetensors",
+                  "directory": "text_encoders"
+                }
+              ]
+            },
+            "widgets_values": [
+              "minimax_music3_text_encoder_pruned_int8_convrot.safetensors",
+              "minimax",
+              "default"
+            ]
+          },
+          {
+            "id": 7,
+            "type": "VAELoader",
+            "pos": [
+              700,
+              750
+            ],
+            "size": [
+              480,
+              70
+            ],
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "vae_name",
+                "name": "vae_name",
+                "type": "COMBO",
+                "widget": {
+                  "name": "vae_name"
+                },
+                "link": 57
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "VAE",
+                "name": "VAE",
+                "type": "VAE",
+                "links": [
+                  13,
+                  59
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "VAELoader",
+              "models": [
+                {
+                  "name": "minimax_music3_dav.safetensors",
+                  "url": "https://huggingface.co/Comfy-Org/MiniMax-Music-3/resolve/main/vae/minimax_music3_dav.safetensors",
+                  "directory": "vae"
+                }
+              ]
+            },
+            "widgets_values": [
+              "minimax_music3_dav.safetensors"
+            ]
+          },
+          {
+            "id": 10,
+            "type": "ConditioningZeroOut",
+            "pos": [
+              1820,
+              540
+            ],
+            "size": [
+              230,
+              40
+            ],
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "conditioning",
+                "name": "conditioning",
+                "type": "CONDITIONING",
+                "link": 16
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "CONDITIONING",
+                "name": "CONDITIONING",
+                "type": "CONDITIONING",
+                "links": [
+                  8
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "ConditioningZeroOut"
+            },
+            "widgets_values": []
+          },
+          {
+            "id": 15,
+            "type": "EmptyMiniMaxMusic3LatentAudio",
+            "pos": [
+              1780,
+              380
+            ],
+            "size": [
+              350,
+              90
+            ],
+            "flags": {},
+            "order": 7,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "seconds",
+                "name": "seconds",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "seconds"
+                },
+                "link": 20
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "LATENT",
+                "name": "LATENT",
+                "type": "LATENT",
+                "links": [
+                  21
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "EmptyMiniMaxMusic3LatentAudio"
+            },
+            "widgets_values": [
+              120,
+              1
+            ]
+          },
+          {
+            "id": 9,
+            "type": "KSampler",
+            "pos": [
+              2170,
+              380
+            ],
+            "size": [
+              370,
+              270
+            ],
+            "flags": {},
+            "order": 3,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "model",
+                "name": "model",
+                "type": "MODEL",
+                "link": 6
+              },
+              {
+                "localized_name": "positive",
+                "name": "positive",
+                "type": "CONDITIONING",
+                "link": 15
+              },
+              {
+                "localized_name": "negative",
+                "name": "negative",
+                "type": "CONDITIONING",
+                "link": 8
+              },
+              {
+                "localized_name": "latent_image",
+                "name": "latent_image",
+                "type": "LATENT",
+                "link": 21
+              },
+              {
+                "localized_name": "seed",
+                "name": "seed",
+                "type": "INT",
+                "widget": {
+                  "name": "seed"
+                },
+                "link": 53
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "LATENT",
+                "name": "LATENT",
+                "type": "LATENT",
+                "links": [
+                  12,
+                  58
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "KSampler"
+            },
+            "widgets_values": [
+              1111111112,
+              "fixed",
+              30,
+              1.7,
+              "euler",
+              "simple",
+              1
+            ]
+          },
+          {
+            "id": 12,
+            "type": "VAEDecodeAudio",
+            "pos": [
+              2590,
+              380
+            ],
+            "size": [
+              230,
+              60
+            ],
+            "flags": {},
+            "order": 5,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "samples",
+                "name": "samples",
+                "type": "LATENT",
+                "link": 12
+              },
+              {
+                "localized_name": "vae",
+                "name": "vae",
+                "type": "VAE",
+                "link": 13
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "AUDIO",
+                "name": "AUDIO",
+                "type": "AUDIO",
+                "links": [
+                  60
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "VAEDecodeAudio"
+            },
+            "widgets_values": []
+          },
+          {
+            "id": 38,
+            "type": "SeedNode",
+            "pos": [
+              890,
+              970
+            ],
+            "size": [
+              270,
+              90
+            ],
+            "flags": {},
+            "order": 8,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "seed",
+                "name": "seed",
+                "type": "INT",
+                "widget": {
+                  "name": "seed"
+                },
+                "link": 54
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "seed",
+                "name": "seed",
+                "type": "INT",
+                "links": [
+                  52,
+                  53
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "SeedNode"
+            },
+            "widgets_values": [
+              0,
+              "randomize"
+            ]
+          },
+          {
+            "id": 42,
+            "type": "VAEDecodeAudioTiled",
+            "pos": [
+              2580,
+              500
+            ],
+            "size": [
+              280,
+              110
+            ],
+            "flags": {},
+            "order": 9,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "samples",
+                "name": "samples",
+                "type": "LATENT",
+                "link": 58
+              },
+              {
+                "localized_name": "vae",
+                "name": "vae",
+                "type": "VAE",
+                "link": 59
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "AUDIO",
+                "name": "AUDIO",
+                "type": "AUDIO",
+                "links": [
+                  61
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "VAEDecodeAudioTiled"
+            },
+            "widgets_values": [
+              1536,
+              64
+            ]
+          },
+          {
+            "id": 43,
+            "type": "ComfySwitchNode",
+            "pos": [
+              2600,
+              690
+            ],
+            "size": [
+              270,
+              110
+            ],
+            "flags": {},
+            "order": 10,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "on_false",
+                "name": "on_false",
+                "type": "AUDIO",
+                "link": 60
+              },
+              {
+                "localized_name": "on_true",
+                "name": "on_true",
+                "type": "AUDIO",
+                "link": 61
+              },
+              {
+                "localized_name": "switch",
+                "name": "switch",
+                "type": "BOOLEAN",
+                "widget": {
+                  "name": "switch"
+                },
+                "link": 63
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "output",
+                "name": "output",
+                "type": "AUDIO",
+                "links": [
+                  62
+                ]
+              }
+            ],
+            "properties": {
+              "cnr_id": "comfy-core",
+              "ver": "0.31.0",
+              "Node name for S&R": "ComfySwitchNode"
+            },
+            "widgets_values": [
+              false
+            ]
+          }
+        ],
+        "groups": [],
+        "links": [
+          {
+            "id": 18,
+            "origin_id": 3,
+            "origin_slot": 0,
+            "target_id": 13,
+            "target_slot": 0,
+            "type": "CLIP"
+          },
+          {
+            "id": 16,
+            "origin_id": 13,
+            "origin_slot": 0,
+            "target_id": 10,
+            "target_slot": 0,
+            "type": "CONDITIONING"
+          },
+          {
+            "id": 20,
+            "origin_id": 13,
+            "origin_slot": 1,
+            "target_id": 15,
+            "target_slot": 0,
+            "type": "FLOAT"
+          },
+          {
+            "id": 6,
+            "origin_id": 6,
+            "origin_slot": 0,
+            "target_id": 9,
+            "target_slot": 0,
+            "type": "MODEL"
+          },
+          {
+            "id": 15,
+            "origin_id": 13,
+            "origin_slot": 0,
+            "target_id": 9,
+            "target_slot": 1,
+            "type": "CONDITIONING"
+          },
+          {
+            "id": 8,
+            "origin_id": 10,
+            "origin_slot": 0,
+            "target_id": 9,
+            "target_slot": 2,
+            "type": "CONDITIONING"
+          },
+          {
+            "id": 21,
+            "origin_id": 15,
+            "origin_slot": 0,
+            "target_id": 9,
+            "target_slot": 3,
+            "type": "LATENT"
+          },
+          {
+            "id": 12,
+            "origin_id": 9,
+            "origin_slot": 0,
+            "target_id": 12,
+            "target_slot": 0,
+            "type": "LATENT"
+          },
+          {
+            "id": 13,
+            "origin_id": 7,
+            "origin_slot": 0,
+            "target_id": 12,
+            "target_slot": 1,
+            "type": "VAE"
+          },
+          {
+            "id": 45,
+            "origin_id": -10,
+            "origin_slot": 0,
+            "target_id": 13,
+            "target_slot": 1,
+            "type": "STRING"
+          },
+          {
+            "id": 46,
+            "origin_id": -10,
+            "origin_slot": 1,
+            "target_id": 13,
+            "target_slot": 2,
+            "type": "STRING"
+          },
+          {
+            "id": 47,
+            "origin_id": -10,
+            "origin_slot": 2,
+            "target_id": 13,
+            "target_slot": 4,
+            "type": "FLOAT"
+          },
+          {
+            "id": 52,
+            "origin_id": 38,
+            "origin_slot": 0,
+            "target_id": 13,
+            "target_slot": 3,
+            "type": "INT"
+          },
+          {
+            "id": 53,
+            "origin_id": 38,
+            "origin_slot": 0,
+            "target_id": 9,
+            "target_slot": 4,
+            "type": "INT"
+          },
+          {
+            "id": 54,
+            "origin_id": -10,
+            "origin_slot": 3,
+            "target_id": 38,
+            "target_slot": 0,
+            "type": "INT"
+          },
+          {
+            "id": 55,
+            "origin_id": -10,
+            "origin_slot": 4,
+            "target_id": 6,
+            "target_slot": 0,
+            "type": "COMBO"
+          },
+          {
+            "id": 56,
+            "origin_id": -10,
+            "origin_slot": 5,
+            "target_id": 3,
+            "target_slot": 0,
+            "type": "COMBO"
+          },
+          {
+            "id": 57,
+            "origin_id": -10,
+            "origin_slot": 6,
+            "target_id": 7,
+            "target_slot": 0,
+            "type": "COMBO"
+          },
+          {
+            "id": 58,
+            "origin_id": 9,
+            "origin_slot": 0,
+            "target_id": 42,
+            "target_slot": 0,
+            "type": "LATENT"
+          },
+          {
+            "id": 59,
+            "origin_id": 7,
+            "origin_slot": 0,
+            "target_id": 42,
+            "target_slot": 1,
+            "type": "VAE"
+          },
+          {
+            "id": 60,
+            "origin_id": 12,
+            "origin_slot": 0,
+            "target_id": 43,
+            "target_slot": 0,
+            "type": "AUDIO"
+          },
+          {
+            "id": 61,
+            "origin_id": 42,
+            "origin_slot": 0,
+            "target_id": 43,
+            "target_slot": 1,
+            "type": "AUDIO"
+          },
+          {
+            "id": 62,
+            "origin_id": 43,
+            "origin_slot": 0,
+            "target_id": -20,
+            "target_slot": 0,
+            "type": "AUDIO"
+          },
+          {
+            "id": 63,
+            "origin_id": -10,
+            "origin_slot": 7,
+            "target_id": 43,
+            "target_slot": 2,
+            "type": "BOOLEAN"
+          }
+        ],
+        "extra": {}
+      }
+    ]
+  }
+}

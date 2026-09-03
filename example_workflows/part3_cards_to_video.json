@@ -1,0 +1,985 @@
+{
+  "id": "33333333-3333-4333-8333-333333333333",
+  "revision": 1,
+  "last_node_id": 17,
+  "last_link_id": 25,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        60,
+        40
+      ],
+      "size": [
+        860,
+        460
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "# PART 3 - Render video with LTX 2.5\n\nPick the run whose cards you approved in Part 2.\n\n**RENDER SEGMENTS** builds a complete LTX 2.5 first/last-frame graph for each unfinished segment. To keep memory bounded, one execution renders `segments_per_queue` clips (default 4). Every clip is saved immediately under the run, and completed clips are skipped next time.\n\nQueue repeatedly until the status panel reports that all clips are present, or set ComfyUI's Queue batch count to the number of remaining batches shown in the report. Lower `segments_per_queue` if memory is tight.\n\n**THE FEED** lists every segment, timecode, frame count, card pair, seed, prompt, and render status. LTX frame counts use the required `8k + 1` layout, so the stitcher trims each clip to the exact song segment.\n\n`end_guide_strength` defaults to 0.7, matching the official first/last-frame setup. Lower values allow more motion but can weaken the match to the ending card; higher values pull harder toward it.\n\nTo rerender selected segments, delete their `clips/clip_NNN.mp4` files and queue again. Turning `resume` off rerenders the full selected range in one execution and can require much more memory.\n\nOutputs stay inside the run: `clips/`, `segments/`, and `final_music_video.mp4`. The final file is complete once every segment clip is present."
+      ],
+      "title": "READ ME",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 2,
+      "type": "StoryboardProjectLoad",
+      "pos": [
+        60,
+        560
+      ],
+      "size": [
+        420,
+        440
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STORYBOARD_DATA",
+          "type": "STRING",
+          "links": [
+            25
+          ]
+        },
+        {
+          "name": "PROMPT_LIST",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "ANIMATION_PROMPTS",
+          "type": "STRING",
+          "links": [
+            4,
+            23
+          ]
+        },
+        {
+          "name": "REFERENCE_PLAN",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "RUN_DIR",
+          "type": "STRING",
+          "links": [
+            16,
+            17,
+            19,
+            24
+          ]
+        },
+        {
+          "name": "AUDIO_PATH",
+          "type": "STRING",
+          "links": [
+            5
+          ]
+        },
+        {
+          "name": "FULL_LYRICS",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "SEGMENT_COUNT",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardProjectLoad"
+      },
+      "widgets_values": [
+        "<< newest run >>"
+      ],
+      "title": "PICK THE RUN to render",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 15,
+      "type": "PreviewAny",
+      "pos": [
+        1000,
+        1800
+      ],
+      "size": [
+        560,
+        380
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 23
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": ">>> ANIMATION PROMPTS - one per segment <<<"
+    },
+    {
+      "id": 16,
+      "type": "PreviewAny",
+      "pos": [
+        1600,
+        1800
+      ],
+      "size": [
+        560,
+        380
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 22
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": ">>> STORYBOARD DATA - the timeline this run renders <<<"
+    },
+    {
+      "id": 3,
+      "type": "MusicVideoStatus",
+      "pos": [
+        60,
+        1060
+      ],
+      "size": [
+        420,
+        460
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 1
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 16
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STATUS",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MusicVideoStatus"
+      },
+      "widgets_values": [
+        "video",
+        "LTX-2.5_i2v",
+        "final_music_video.mp4"
+      ],
+      "title": "*** WHERE AM I? ***",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 4,
+      "type": "StoryboardCardLoader",
+      "pos": [
+        520,
+        560
+      ],
+      "size": [
+        420,
+        300
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 3
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CARD_IMAGES",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "CARDS_FOUND",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "DECK_REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardCardLoader"
+      },
+      "widgets_values": [
+        false,
+        true
+      ],
+      "title": "Assemble this run's deck",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 5,
+      "type": "StageMemoryCleaner",
+      "pos": [
+        520,
+        900
+      ],
+      "size": [
+        360,
+        140
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "passthrough_data",
+          "type": "*",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PASSTHROUGH",
+          "type": "*",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StageMemoryCleaner"
+      },
+      "widgets_values": [
+        "Unload image models -> free VRAM for LTX 2.5"
+      ],
+      "title": "Unload image models",
+      "color": "#323",
+      "bgcolor": "#535"
+    },
+    {
+      "id": 6,
+      "type": "UNETLoader",
+      "pos": [
+        520,
+        1090
+      ],
+      "size": [
+        420,
+        130
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
+        "default"
+      ],
+      "title": "LTX 2.5 transformer"
+    },
+    {
+      "id": 7,
+      "type": "CLIPLoader",
+      "pos": [
+        520,
+        1260
+      ],
+      "size": [
+        420,
+        140
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors",
+        "ltxv",
+        "default"
+      ],
+      "title": "LTX 2.5 text encoder (Gemma)"
+    },
+    {
+      "id": 8,
+      "type": "VAELoader",
+      "pos": [
+        520,
+        1440
+      ],
+      "size": [
+        420,
+        100
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ltx-2.5-video-vae-bf16.safetensors"
+      ],
+      "title": "LTX 2.5 video VAE"
+    },
+    {
+      "id": 9,
+      "type": "VAELoader",
+      "pos": [
+        520,
+        1580
+      ],
+      "size": [
+        420,
+        100
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ltx-2.5-audio-vae-bf16.safetensors"
+      ],
+      "title": "LTX 2.5 audio VAE"
+    },
+    {
+      "id": 10,
+      "type": "ResolutionSelector",
+      "pos": [
+        60,
+        1580
+      ],
+      "size": [
+        280,
+        180
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "links": [
+            12
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "ResolutionSelector"
+      },
+      "widgets_values": [
+        "16:9 (Widescreen)",
+        0.9,
+        32
+      ],
+      "title": "Video size"
+    },
+    {
+      "id": 11,
+      "type": "LTXSegmentsRender",
+      "pos": [
+        1000,
+        560
+      ],
+      "size": [
+        560,
+        720
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 8
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 9
+        },
+        {
+          "name": "video_vae",
+          "type": "VAE",
+          "link": 10
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 11
+        },
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 7
+        },
+        {
+          "name": "animation_prompts",
+          "type": "STRING",
+          "link": 4
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 18
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 19
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 12
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SEGMENTS_DONE",
+          "type": "STRING",
+          "links": [
+            15
+          ]
+        },
+        {
+          "name": "RENDER_PLAN",
+          "type": "STRING",
+          "links": [
+            20
+          ]
+        },
+        {
+          "name": "SEGMENT_COUNT",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LTXSegmentsRender"
+      },
+      "widgets_values": [
+        false,
+        1280,
+        704,
+        24,
+        42,
+        0.7,
+        "blurry, out of focus, low contrast, washed out colors, excessive noise, flickering, distorted proportions, deformed facial features, extra limbs, jittery movement, unnatural transitions, cartoonish rendering, AI artifacts",
+        999,
+        18,
+        4,
+        true
+      ],
+      "title": "RENDER ALL SEGMENTS  (4 per queue, resumable)",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 12,
+      "type": "PreviewAny",
+      "pos": [
+        1000,
+        1330
+      ],
+      "size": [
+        560,
+        420
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": ">>> THE FEED - every segment + prompt sent to LTX 2.5 <<<"
+    },
+    {
+      "id": 13,
+      "type": "VideoSegmentStitcher",
+      "pos": [
+        1600,
+        560
+      ],
+      "size": [
+        420,
+        520
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio_path",
+          "type": "STRING",
+          "link": 5
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 21
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 24
+        },
+        {
+          "name": "after_segments",
+          "type": "*",
+          "link": 15
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FINAL_VIDEO_PATH",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "SEGMENTS_DIR",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VideoSegmentStitcher"
+      },
+      "widgets_values": [
+        false,
+        "video",
+        "LTX-2.5_i2v",
+        "final_music_video.mp4",
+        24,
+        true
+      ],
+      "title": "Save every segment + the final cut, with the original song",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 14,
+      "type": "MarkdownNote",
+      "pos": [
+        1600,
+        1140
+      ],
+      "size": [
+        720,
+        440
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "# Geekatplay Studio\n### Vladimir Chopine\n\n**Thank you for your support!**\n\nIf this node pack is useful to you, please **give it a star on GitHub** - it really does help other people find it:\n\n[github.com/GeekatplayStudio/ComfyUI-Music-to-Video](https://github.com/GeekatplayStudio/ComfyUI-Music-to-Video)\n\nAnd please subscribe on YouTube for tutorials and new tools:\n\n- [youtube.com/@geekatplay](https://www.youtube.com/@geekatplay) - English\n- [youtube.com/@geekatplay-ru](https://www.youtube.com/@geekatplay-ru) - Russian\n- [youtube.com/@v-code-studio](https://www.youtube.com/@v-code-studio) - **V-Code Studio**, my new channel\n\n---\n*ComfyUI-Music-to-Video - Music Video Storyboard & Video Generator*"
+      ],
+      "title": "Geekatplay Studio - thank you!",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 17,
+      "type": "StageMemoryCleaner",
+      "pos": [
+        520,
+        820
+      ],
+      "size": [
+        340,
+        80
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "passthrough_data",
+          "type": "*",
+          "link": 25
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PASSTHROUGH",
+          "type": "*",
+          "links": [
+            1,
+            3,
+            18,
+            21,
+            22
+          ]
+        }
+      ],
+      "title": "CLEAR MEMORY between stages",
+      "properties": {
+        "Node name for S&R": "StageMemoryCleaner"
+      },
+      "widgets_values": [
+        "Clear previous stage models before video render"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      17,
+      0,
+      3,
+      0,
+      "STRING"
+    ],
+    [
+      3,
+      17,
+      0,
+      4,
+      0,
+      "STRING"
+    ],
+    [
+      4,
+      2,
+      2,
+      11,
+      5,
+      "STRING"
+    ],
+    [
+      5,
+      2,
+      5,
+      13,
+      0,
+      "STRING"
+    ],
+    [
+      6,
+      4,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ],
+    [
+      7,
+      5,
+      0,
+      11,
+      4,
+      "IMAGE"
+    ],
+    [
+      8,
+      6,
+      0,
+      11,
+      0,
+      "MODEL"
+    ],
+    [
+      9,
+      7,
+      0,
+      11,
+      1,
+      "CLIP"
+    ],
+    [
+      10,
+      8,
+      0,
+      11,
+      2,
+      "VAE"
+    ],
+    [
+      11,
+      9,
+      0,
+      11,
+      3,
+      "VAE"
+    ],
+    [
+      12,
+      10,
+      0,
+      11,
+      8,
+      "INT"
+    ],
+    [
+      13,
+      10,
+      1,
+      11,
+      9,
+      "INT"
+    ],
+    [
+      15,
+      11,
+      0,
+      13,
+      3,
+      "STRING"
+    ],
+    [
+      16,
+      2,
+      4,
+      3,
+      1,
+      "STRING"
+    ],
+    [
+      17,
+      2,
+      4,
+      4,
+      1,
+      "STRING"
+    ],
+    [
+      18,
+      17,
+      0,
+      11,
+      6,
+      "STRING"
+    ],
+    [
+      19,
+      2,
+      4,
+      11,
+      7,
+      "STRING"
+    ],
+    [
+      20,
+      11,
+      1,
+      12,
+      0,
+      "STRING"
+    ],
+    [
+      21,
+      17,
+      0,
+      13,
+      1,
+      "STRING"
+    ],
+    [
+      22,
+      17,
+      0,
+      16,
+      0,
+      "STRING"
+    ],
+    [
+      23,
+      2,
+      2,
+      15,
+      0,
+      "STRING"
+    ],
+    [
+      24,
+      2,
+      4,
+      13,
+      2,
+      "STRING"
+    ],
+    [
+      25,
+      2,
+      0,
+      17,
+      0,
+      "*"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "PART 3 : cards -> LTX 2.5 video -> final cut, RESUMABLE BATCHES",
+      "bounding": [
+        40,
+        470,
+        2320,
+        1780
+      ],
+      "color": "#9e6b3f",
+      "font_size": 30,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

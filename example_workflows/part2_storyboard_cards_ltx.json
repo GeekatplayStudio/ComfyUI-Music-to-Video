@@ -1,0 +1,1130 @@
+{
+  "id": "22222222-2222-2222-8222-222222222222",
+  "revision": 1,
+  "last_node_id": 18,
+  "last_link_id": 29,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        60,
+        40
+      ],
+      "size": [
+        860,
+        400
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "# PART 2 - Render references and cards\n\nThis step is shared by the LTX 2.5 and MiniMax H3 pipelines; both video backends use the same saved cards.\n\n**1. Pick the run** created by Part 1. `<< newest run >>` follows the latest run; reload the browser to see a new run in the explicit folder list.\n\n**2. Render references.** Part 1 decided which characters, locations, and recurring props the song needs. Each reference renders as a turnaround sheet. The first view of each reference is assigned to matching cards.\n\n**3. Save the sheet.** Reference images and `references.txt` are written under `<run>/references/`.\n\n**4. Render all cards.** Each card uses its assigned reference so the cast and locations remain consistent. `reference_strength` controls the match: 0 ignores the reference, 1 follows it closely, and 0.5 is a practical starting point.\n\nThe included image graph uses Z-Image Turbo at 8 steps and CFG 1.0. Replace it with another compatible image model if desired.\n\n**5. Review the deck.** When every required card is present, enable `approve_cards`. Then open the matching Part 3 workflow for LTX 2.5 or MiniMax H3."
+      ],
+      "title": "READ ME",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 2,
+      "type": "StoryboardProjectLoad",
+      "pos": [
+        60,
+        480
+      ],
+      "size": [
+        420,
+        440
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STORYBOARD_DATA",
+          "type": "STRING",
+          "links": [
+            26
+          ]
+        },
+        {
+          "name": "PROMPT_LIST",
+          "type": "STRING",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "ANIMATION_PROMPTS",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "REFERENCE_PLAN",
+          "type": "STRING",
+          "links": [
+            16,
+            17
+          ]
+        },
+        {
+          "name": "RUN_DIR",
+          "type": "STRING",
+          "links": [
+            14,
+            15,
+            25
+          ]
+        },
+        {
+          "name": "AUDIO_PATH",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "FULL_LYRICS",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "SEGMENT_COUNT",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardProjectLoad"
+      },
+      "widgets_values": [
+        "<< newest run >>"
+      ],
+      "title": "PICK THE RUN to render",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 3,
+      "type": "MusicVideoStatus",
+      "pos": [
+        60,
+        980
+      ],
+      "size": [
+        420,
+        460
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 1
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 14
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STATUS",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MusicVideoStatus"
+      },
+      "widgets_values": [
+        "video",
+        "LTX-2.5_i2v",
+        "final_music_video.mp4"
+      ],
+      "title": "*** WHERE AM I? ***",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 4,
+      "type": "UNETLoader",
+      "pos": [
+        520,
+        420
+      ],
+      "size": [
+        420,
+        130
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            5,
+            18
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "z_image_turbo_bf16.safetensors",
+        "default"
+      ],
+      "title": "Z-Image Turbo model"
+    },
+    {
+      "id": 12,
+      "type": "CLIPLoader",
+      "pos": [
+        520,
+        580
+      ],
+      "size": [
+        420,
+        140
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            6,
+            19
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen_3_4b.safetensors",
+        "lumina2",
+        "default"
+      ],
+      "title": "Z-Image text encoder (Qwen3-4B)"
+    },
+    {
+      "id": 13,
+      "type": "VAELoader",
+      "pos": [
+        520,
+        750
+      ],
+      "size": [
+        420,
+        100
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            7,
+            20
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ae.safetensors"
+      ],
+      "title": "Z-Image VAE (16-channel)"
+    },
+    {
+      "id": 5,
+      "type": "ResolutionSelector",
+      "pos": [
+        520,
+        880
+      ],
+      "size": [
+        280,
+        180
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "links": [
+            8
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "ResolutionSelector"
+      },
+      "widgets_values": [
+        "16:9 (Widescreen)",
+        0.9,
+        32
+      ],
+      "title": "Card size"
+    },
+    {
+      "id": 10,
+      "type": "StoryboardReferencesRender",
+      "pos": [
+        520,
+        1100
+      ],
+      "size": [
+        440,
+        540
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 18
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 19
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 20
+        },
+        {
+          "name": "reference_plan",
+          "type": "STRING",
+          "link": 16
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 29,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "REFERENCE_IMAGES",
+          "type": "IMAGE",
+          "links": [
+            22
+          ]
+        },
+        {
+          "name": "REFERENCE_SHEET",
+          "type": "IMAGE",
+          "links": [
+            21,
+            23
+          ]
+        },
+        {
+          "name": "REFERENCE_PLAN",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "SHEET_LAYOUT",
+          "type": "STRING",
+          "links": [
+            24
+          ]
+        },
+        {
+          "name": "REFERENCE_COUNT",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "REFERENCE_REPORT",
+          "type": "STRING",
+          "links": [
+            28
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardReferencesRender"
+      },
+      "widgets_values": [
+        false,
+        4,
+        1024,
+        1024,
+        8,
+        1.0,
+        "euler",
+        "simple",
+        42,
+        "fixed",
+        "text, watermark, logo, blurry, low quality, deformed, extra limbs, bad anatomy"
+      ],
+      "title": "1. RENDER REFERENCES  (turnaround sheet)",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 11,
+      "type": "PreviewImage",
+      "pos": [
+        1000,
+        1100
+      ],
+      "size": [
+        460,
+        480
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "title": "THE REFERENCE SHEET - every angle"
+    },
+    {
+      "id": 15,
+      "type": "StoryboardReferenceSaver",
+      "pos": [
+        1480,
+        1100
+      ],
+      "size": [
+        440,
+        320
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 23
+        },
+        {
+          "name": "sheet_layout",
+          "type": "STRING",
+          "link": 24
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 25
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGES",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "REFERENCES_DIR",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "SAVE_REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardReferenceSaver"
+      },
+      "widgets_values": [],
+      "title": "2. SAVE THE SHEET into the run",
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 6,
+      "type": "StoryboardCardsRender",
+      "pos": [
+        1000,
+        480
+      ],
+      "size": [
+        460,
+        360
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 5
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 6
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 7
+        },
+        {
+          "name": "prompt_list",
+          "type": "STRING",
+          "link": 4
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 2
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 8
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 9
+        },
+        {
+          "name": "reference_images",
+          "type": "IMAGE",
+          "link": 22
+        },
+        {
+          "name": "reference_plan",
+          "type": "STRING",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CARD_IMAGES",
+          "type": "IMAGE",
+          "links": [
+            10,
+            11,
+            12
+          ]
+        },
+        {
+          "name": "CARD_COUNT",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "CARD_REPORT",
+          "type": "STRING",
+          "links": [
+            27
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardCardsRender"
+      },
+      "widgets_values": [
+        false,
+        1280,
+        720,
+        8,
+        1.0,
+        "euler",
+        "simple",
+        0,
+        "increment",
+        "text, watermark, logo, blurry, low quality, jpeg artifacts, deformed, extra limbs, bad anatomy, oversaturated",
+        128,
+        0.5
+      ],
+      "title": "3. RENDER ALL CARDS  (built on their references)",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 7,
+      "type": "PreviewImage",
+      "pos": [
+        1520,
+        480
+      ],
+      "size": [
+        620,
+        620
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "title": "ALL CARDS"
+    },
+    {
+      "id": 8,
+      "type": "StoryboardCardSaver",
+      "pos": [
+        1520,
+        1140
+      ],
+      "size": [
+        420,
+        260
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 11
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 3
+        },
+        {
+          "name": "run_dir",
+          "type": "STRING",
+          "link": 15
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SAVE_REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardCardSaver"
+      },
+      "widgets_values": [
+        0,
+        ""
+      ],
+      "title": "Save deck into this run's folder",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 9,
+      "type": "StoryboardCardReview",
+      "pos": [
+        2180,
+        480
+      ],
+      "size": [
+        420,
+        380
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 12
+        },
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CARD_IMAGES",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "CARD_REPORT",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardCardReview"
+      },
+      "widgets_values": [
+        false,
+        false
+      ],
+      "title": ">>> STOP <<<  like the cards?",
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 14,
+      "type": "MarkdownNote",
+      "pos": [
+        2180,
+        900
+      ],
+      "size": [
+        720,
+        440
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "# Geekatplay Studio\n### Vladimir Chopine\n\n**Thank you for your support!**\n\nIf this node pack is useful to you, please **give it a star on GitHub** - it really does help other people find it:\n\n[github.com/GeekatplayStudio/ComfyUI-Music-to-Video](https://github.com/GeekatplayStudio/ComfyUI-Music-to-Video)\n\nAnd please subscribe on YouTube for tutorials and new tools:\n\n- [youtube.com/@geekatplay](https://www.youtube.com/@geekatplay) - English\n- [youtube.com/@geekatplay-ru](https://www.youtube.com/@geekatplay-ru) - Russian\n- [youtube.com/@v-code-studio](https://www.youtube.com/@v-code-studio) - **V-Code Studio**, my new channel\n\n---\n*ComfyUI-Music-to-Video - Music Video Storyboard & Video Generator*"
+      ],
+      "title": "Geekatplay Studio - thank you!",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 16,
+      "type": "StageMemoryCleaner",
+      "pos": [
+        520,
+        740
+      ],
+      "size": [
+        340,
+        80
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "passthrough_data",
+          "type": "*",
+          "link": 26
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PASSTHROUGH",
+          "type": "*",
+          "links": [
+            1,
+            2,
+            3,
+            13,
+            29
+          ]
+        }
+      ],
+      "title": "CLEAR MEMORY between stages",
+      "properties": {
+        "Node name for S&R": "StageMemoryCleaner"
+      },
+      "widgets_values": [
+        "Clear previous stage models before card render"
+      ]
+    },
+    {
+      "id": 17,
+      "type": "PreviewAny",
+      "pos": [
+        1500,
+        480
+      ],
+      "size": [
+        560,
+        520
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 27
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "CARD PROMPTS - which JSON + the exact prompt for every card"
+    },
+    {
+      "id": 18,
+      "type": "PreviewAny",
+      "pos": [
+        1020,
+        1660
+      ],
+      "size": [
+        560,
+        520
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "REFERENCE PROMPTS - which JSON + the exact prompt for every reference"
+    }
+  ],
+  "links": [
+    [
+      1,
+      16,
+      0,
+      3,
+      0,
+      "STRING"
+    ],
+    [
+      2,
+      16,
+      0,
+      6,
+      4,
+      "STRING"
+    ],
+    [
+      3,
+      16,
+      0,
+      8,
+      1,
+      "STRING"
+    ],
+    [
+      4,
+      2,
+      1,
+      6,
+      3,
+      "STRING"
+    ],
+    [
+      5,
+      4,
+      0,
+      6,
+      0,
+      "MODEL"
+    ],
+    [
+      6,
+      12,
+      0,
+      6,
+      1,
+      "CLIP"
+    ],
+    [
+      7,
+      13,
+      0,
+      6,
+      2,
+      "VAE"
+    ],
+    [
+      8,
+      5,
+      0,
+      6,
+      5,
+      "INT"
+    ],
+    [
+      9,
+      5,
+      1,
+      6,
+      6,
+      "INT"
+    ],
+    [
+      10,
+      6,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      11,
+      6,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      12,
+      6,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      13,
+      16,
+      0,
+      9,
+      1,
+      "STRING"
+    ],
+    [
+      14,
+      2,
+      4,
+      3,
+      1,
+      "STRING"
+    ],
+    [
+      15,
+      2,
+      4,
+      8,
+      2,
+      "STRING"
+    ],
+    [
+      16,
+      2,
+      3,
+      10,
+      3,
+      "STRING"
+    ],
+    [
+      17,
+      2,
+      3,
+      6,
+      8,
+      "STRING"
+    ],
+    [
+      18,
+      4,
+      0,
+      10,
+      0,
+      "MODEL"
+    ],
+    [
+      19,
+      12,
+      0,
+      10,
+      1,
+      "CLIP"
+    ],
+    [
+      20,
+      13,
+      0,
+      10,
+      2,
+      "VAE"
+    ],
+    [
+      21,
+      10,
+      1,
+      11,
+      0,
+      "IMAGE"
+    ],
+    [
+      22,
+      10,
+      0,
+      6,
+      7,
+      "IMAGE"
+    ],
+    [
+      23,
+      10,
+      1,
+      15,
+      0,
+      "IMAGE"
+    ],
+    [
+      24,
+      10,
+      3,
+      15,
+      1,
+      "STRING"
+    ],
+    [
+      25,
+      2,
+      4,
+      15,
+      2,
+      "STRING"
+    ],
+    [
+      26,
+      2,
+      0,
+      16,
+      0,
+      "*"
+    ],
+    [
+      27,
+      6,
+      2,
+      17,
+      0,
+      "STRING"
+    ],
+    [
+      28,
+      10,
+      5,
+      18,
+      0,
+      "STRING"
+    ],
+    [
+      29,
+      16,
+      0,
+      10,
+      4,
+      "STRING"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "PART 2 : references -> cards  (stops for approval)",
+      "bounding": [
+        40,
+        390,
+        2580,
+        1320
+      ],
+      "color": "#3f9e5a",
+      "font_size": 30,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

@@ -1,0 +1,619 @@
+{
+  "id": "11111111-1111-1111-8111-222222222222",
+  "revision": 1,
+  "last_node_id": 11,
+  "last_link_id": 11,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        60,
+        40
+      ],
+      "size": [
+        900,
+        440
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "# PART 1 - Plan from an audio file\n\nThis workflow creates the timeline and prompts used by Parts 2 and 3. No image or video model runs here, so it is fast to iterate.\n\n**1. Load your song**, then queue the workflow.\n\n**2. Analyse** transcribes the lyrics and divides the song into 5-10 second, beat-aware segments.\n\n**3. Review the green STOP node.** Choose a `style_preset`, add an optional `style_description`, and adjust segment timing if needed. The subject, locations, card prompts, and motion prompts are derived from the song unless you fill the optional overrides.\n\n**4. Approve and save.** `approve_timeline` marks the run you want to continue. Part 1 saves `project.json` and a copy of the song under:\n\n`output/storyboard_projects/<project>__<date-time>__<id>/`\n\nOpen Part 2 and keep `<< newest run >>`, or reload the browser and select this run explicitly. Each Part 1 queue creates a new run, so existing work is not overwritten."
+      ],
+      "title": "READ ME",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 2,
+      "type": "LoadAudio",
+      "pos": [
+        60,
+        520
+      ],
+      "size": [
+        360,
+        150
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.30.0",
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "example_song.mp3",
+        null,
+        null
+      ],
+      "title": "Your song",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 3,
+      "type": "AudioLyricsSegmenter",
+      "pos": [
+        60,
+        720
+      ],
+      "size": [
+        400,
+        330
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STORYBOARD_DATA",
+          "type": "STRING",
+          "links": [
+            11
+          ]
+        },
+        {
+          "name": "SEGMENT_COUNT",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "AUDIO_PATH",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AudioLyricsSegmenter"
+      },
+      "widgets_values": [
+        false,
+        6.0,
+        "large-v3",
+        "",
+        ""
+      ],
+      "title": "1. Analyse song + transcribe lyrics"
+    },
+    {
+      "id": 4,
+      "type": "MusicVideoStatus",
+      "pos": [
+        60,
+        1100
+      ],
+      "size": [
+        400,
+        460
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STATUS",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MusicVideoStatus"
+      },
+      "widgets_values": [
+        "video",
+        "LTX-2.5_i2v",
+        "final_music_video.mp4"
+      ],
+      "title": "*** WHERE AM I? ***",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 5,
+      "type": "SongTimelineReview",
+      "pos": [
+        500,
+        520
+      ],
+      "size": [
+        560,
+        780
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STORYBOARD_DATA",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "PREVIEW_DATA",
+          "type": "STRING",
+          "links": [
+            5,
+            4
+          ]
+        },
+        {
+          "name": "TIMELINE_TABLE",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "FULL_LYRICS",
+          "type": "STRING",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "SEGMENT_COUNT",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SongTimelineReview"
+      },
+      "widgets_values": [
+        false,
+        false,
+        "",
+        "Auto (match the music)",
+        ""
+      ],
+      "title": ">>> STOP <<<  describe the look, then approve",
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 6,
+      "type": "PreviewAny",
+      "pos": [
+        500,
+        1340
+      ],
+      "size": [
+        560,
+        420
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "FULL LYRICS (complete, nothing cut)"
+    },
+    {
+      "id": 7,
+      "type": "StoryboardPromptGenerator",
+      "pos": [
+        1100,
+        520
+      ],
+      "size": [
+        480,
+        720
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PROMPT_LIST",
+          "type": "STRING",
+          "links": [
+            7
+          ]
+        },
+        {
+          "name": "ANIMATION_PROMPTS",
+          "type": "STRING",
+          "links": [
+            8
+          ]
+        },
+        {
+          "name": "REFERENCE_PLAN",
+          "type": "STRING",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "CARD_SHEET",
+          "type": "STRING",
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "CARD_COUNT",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardPromptGenerator"
+      },
+      "widgets_values": [
+        false,
+        "Auto (detect from music theme & lyrics)",
+        "",
+        "",
+        "",
+        "",
+        "Z-Image",
+        "Creative (artistic music video - mood, symbolism, ideas leak between verses)",
+        "",
+        true,
+        "local LLM (reads the song, needs a model)",
+        "Qwen/Qwen3-4B-Instruct-2507",
+        0,
+        "fixed",
+        0.85
+      ],
+      "title": "2. BUILD ALL PROMPTS from the song  (fields below are OPTIONAL overrides)"
+    },
+    {
+      "id": 8,
+      "type": "PreviewAny",
+      "pos": [
+        1620,
+        520
+      ],
+      "size": [
+        720,
+        1080
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [],
+      "title": "REFERENCES + CARD PROMPTS - what will be rendered"
+    },
+    {
+      "id": 9,
+      "type": "StoryboardProjectSave",
+      "pos": [
+        1100,
+        1280
+      ],
+      "size": [
+        480,
+        320
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "storyboard_data",
+          "type": "STRING",
+          "link": 4
+        },
+        {
+          "name": "prompt_list",
+          "type": "STRING",
+          "link": 7
+        },
+        {
+          "name": "animation_prompts",
+          "type": "STRING",
+          "link": 8
+        },
+        {
+          "name": "reference_plan",
+          "type": "STRING",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PROJECT_FILE",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "RUN_DIR",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "AUDIO_PATH",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "STORYBOARD_DATA",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StoryboardProjectSave"
+      },
+      "widgets_values": [
+        "music_video",
+        "new run every queue"
+      ],
+      "title": "3. Save the run  (draft until you approve)",
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 10,
+      "type": "MarkdownNote",
+      "pos": [
+        1620,
+        1650
+      ],
+      "size": [
+        720,
+        440
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "# Geekatplay Studio\n### Vladimir Chopine\n\n**Thank you for your support!**\n\nIf this node pack is useful to you, please **give it a star on GitHub** - it really does help other people find it:\n\n[github.com/GeekatplayStudio/ComfyUI-Music-to-Video](https://github.com/GeekatplayStudio/ComfyUI-Music-to-Video)\n\nAnd please subscribe on YouTube for tutorials and new tools:\n\n- [youtube.com/@geekatplay](https://www.youtube.com/@geekatplay) - English\n- [youtube.com/@geekatplay-ru](https://www.youtube.com/@geekatplay-ru) - Russian\n- [youtube.com/@v-code-studio](https://www.youtube.com/@v-code-studio) - **V-Code Studio**, my new channel\n\n---\n*ComfyUI-Music-to-Video - Music Video Storyboard & Video Generator*"
+      ],
+      "title": "Geekatplay Studio - thank you!",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 11,
+      "type": "StageMemoryCleaner",
+      "pos": [
+        500,
+        980
+      ],
+      "size": [
+        340,
+        80
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "passthrough_data",
+          "type": "*",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "name": "PASSTHROUGH",
+          "type": "*",
+          "links": [
+            2,
+            3
+          ]
+        }
+      ],
+      "title": "CLEAR MEMORY between stages",
+      "properties": {
+        "Node name for S&R": "StageMemoryCleaner"
+      },
+      "widgets_values": [
+        "Unload whisper before prompt generation"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      2,
+      0,
+      3,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      11,
+      0,
+      4,
+      0,
+      "STRING"
+    ],
+    [
+      3,
+      11,
+      0,
+      5,
+      0,
+      "STRING"
+    ],
+    [
+      4,
+      5,
+      1,
+      9,
+      0,
+      "STRING"
+    ],
+    [
+      5,
+      5,
+      1,
+      7,
+      0,
+      "STRING"
+    ],
+    [
+      6,
+      5,
+      3,
+      6,
+      0,
+      "STRING"
+    ],
+    [
+      7,
+      7,
+      0,
+      9,
+      1,
+      "STRING"
+    ],
+    [
+      8,
+      7,
+      1,
+      9,
+      2,
+      "STRING"
+    ],
+    [
+      9,
+      7,
+      3,
+      8,
+      0,
+      "STRING"
+    ],
+    [
+      10,
+      7,
+      2,
+      9,
+      3,
+      "STRING"
+    ],
+    [
+      11,
+      3,
+      0,
+      11,
+      0,
+      "*"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "PART 1 : plan the video  (stops for approval)",
+      "bounding": [
+        40,
+        490,
+        2320,
+        1300
+      ],
+      "color": "#3f789e",
+      "font_size": 30,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

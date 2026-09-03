@@ -1,0 +1,56 @@
+numpy
+
+# librosa drives the music analysis: tempo, key, energy, brightness and
+# percussiveness, which "Auto (match the music)" turns into the look and palette.
+# It is also the audio loader for the transformers transcription backend.
+# Without it the pipeline still runs - it just skips music-based styling.
+librosa
+
+# ffmpeg and ffprobe are NOT pip packages. Both must be on PATH:
+#   ffmpeg  - required, joins the clips and muxes the original song
+#   ffprobe - measures songs supplied by file path (an AUDIO connection needs neither)
+# https://ffmpeg.org/download.html
+
+# --- LLM prompt writer (optional) ---
+# StoryboardPromptGenerator's `prompt_writer` has two settings:
+#   "rule tables"  - the built-in keyword tables. Instant, offline, no download.
+#   "local LLM"    - a small instruct model reads the whole song and writes
+#                    every card and motion prompt against that reading.
+# The LLM setting needs transformers + accelerate (both normally ship with
+# ComfyUI) and an instruct checkpoint. Put a folder under ComfyUI/models/LLM or
+# name a Hugging Face repo id; ~4B is enough, and a Gemma 3 or Qwen-VL you
+# already keep for LTX works too. If the model cannot be loaded the node logs
+# why and falls back to the rule tables, so nothing here is required to run.
+# accelerate
+
+# --- lyric transcription (optional) ---
+# whisper_mode = tiny/base/small/medium/large-v3 uses the first backend available:
+#   1. faster-whisper   pip install faster-whisper      (fastest)
+#   2. openai-whisper   pip install openai-whisper
+#   3. transformers     already shipped with ComfyUI    (no install needed)
+# With none of them, keep whisper_mode on "none" and paste lyrics into custom_lyrics.
+# Sung vocals transcribe far better with the bigger checkpoints: use
+# whisper_mode = "large-v3" (or at least "medium") for songs - "base" mishears
+# lyrics badly. Pasting the real lyrics into custom_lyrics ALSO helps when
+# whisper is on: they are fed to the decoder as a vocabulary hint.
+faster-whisper
+# ctranslate2 (faster-whisper's engine) is built against CUDA 12; ComfyUI's
+# torch cu13 ships only CUDA 13 DLLs, so without these wheels the CUDA path
+# fails with 'cublas64_12.dll not found' or hangs silently inside cuDNN.
+# The node registers their bin folders on PATH at transcription time.
+nvidia-cublas-cu12
+nvidia-cudnn-cu12
+
+# --- vocal separation before transcription (optional, recommended) ---
+# When demucs is installed, the vocal stem is isolated first and Whisper
+# transcribes only the voice - dramatically fewer mishears on full mixes.
+# The htdemucs checkpoint (~300MB) auto-downloads on first use.
+demucs
+soundfile
+
+# --- music genre analysis (optional, recommended) ---
+# A GTZAN-tuned Audio Spectrogram Transformer names the song's genre
+# (country, rock, classical, hiphop...) and that label picks the visual look;
+# without it the look falls back to tempo/key/timbre heuristics.
+# Needs only transformers (ships with ComfyUI); the ~350MB checkpoint
+# 'dima806/music_genres_classification' auto-downloads to the HF cache.

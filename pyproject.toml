@@ -1,0 +1,21 @@
+[project]
+name = "comfyui-music-to-video"
+description = "Turn a song into an AI music video: beat-aware timeline, lyric-derived storyboard cards, character/scene/prop reference sheets, and LTX 2.5 video with the original soundtrack."
+version = "1.0.0"
+license = { text = "MIT" }
+authors = [{ name = "Geekatplay Studio - Vladimir Chopine" }]
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["comfyui", "music-video", "storyboard", "ltx", "video", "audio", "lyrics"]
+dependencies = ["numpy", "librosa"]
+
+[project.urls]
+Repository = "https://github.com/GeekatplayStudio/ComfyUI-Music-to-Video"
+Youtube = "https://www.youtube.com/@geekatplay"
+YoutubeRu = "https://www.youtube.com/@geekatplay-ru"
+VCodeStudio = "https://www.youtube.com/@v-code-studio"
+
+[tool.comfy]
+PublisherId = "geekatplay"
+DisplayName = "Geekatplay VideoClipMaker (Music Video Maker)"
+Icon = ""
